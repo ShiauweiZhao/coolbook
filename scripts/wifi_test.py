@@ -49,10 +49,14 @@ def get_packet_loss_and_latency(target):
         else:
             latency_sum += result
 
+    if packet_loss == 10:
+        return 100, None
+
     packet_loss = (packet_loss / 10) * 100
     latency = latency_sum / (10 - packet_loss)
 
     return packet_loss, latency
+
 
 def wifi_test(interface):
     gateway_ip = get_default_gateway(interface)
