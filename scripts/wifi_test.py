@@ -40,8 +40,8 @@ def ping_target(target):
 def get_packet_loss_and_latency(target):
     packet_loss = 0
     latency_sum = 0
-    with ThreadPoolExecutor(max_workers=10) as executor:
-        results = list(executor.map(ping_target, [target] * 10))
+    with ThreadPoolExecutor(max_workers=20) as executor:
+        results = list(executor.map(ping_target, [target] * 20))
 
     for result in results:
         if result is None:
@@ -49,11 +49,11 @@ def get_packet_loss_and_latency(target):
         else:
             latency_sum += result
 
-    if packet_loss == 10:
+    if packet_loss == 20:
         return 100, None
 
-    packet_loss = (packet_loss / 10) * 100
-    latency = latency_sum / (10 - packet_loss)
+    packet_loss = (packet_loss / 20) * 100
+    latency = latency_sum / (20 - packet_loss)
 
     return packet_loss, latency
 
