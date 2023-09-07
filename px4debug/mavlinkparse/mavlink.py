@@ -1,4 +1,4 @@
-import serial
+# -*- coding: utf-8 -*-
 from pymavlink import mavutil
 from datetime import datetime  # 导入datetime模块
 
@@ -14,29 +14,24 @@ def parse_mavlink_message(msg):
     print(f"Payload: {msg.get_payload()}")
 
 # 串口配置
-serial_port = '/dev/ttyUSB4'  # 请根据实际情况修改串口名
+serial_port = '/dev/ttyUSB1'  # 请根据实际情况修改串口名
 baud_rate = 115200
 
 ser = None  # 初始化ser变量
 
 try:
     # 打开串口连接
-    ser = serial.Serial(serial_port, baud_rate)
-    print(f"Connected to {serial_port} at {baud_rate} bps.")
-
-    # 创建一个MAVLink解析器对象
-    mav_parser = mavutil.mavlink.MAVLink(ser)
+   connection = mavutil.mavlink_connection(serial_device, dialect="efytech",baud=baud_rate)
 
     while True:
         # 读取一个字节的数据
-        data = ser.read()
+        message = connection.recv_msg()
 
-        # 解析收到的字节流
-        msg = mav_parser.parse_char(data)
 
-        if msg:
-            # 如果成功解析了一条消息，则调用解析函数进行处理
-            parse_mavlink_message(msg)
+       if message is not None:
+            # 打印消息类型和消息内容
+            # print(f"Received message: {message.get_type()} - {message.to_dict()}")
+            parse_mavlink_message(message)
 
 except KeyboardInterrupt:
     print("KeyboardInterrupt: Program terminated.")
